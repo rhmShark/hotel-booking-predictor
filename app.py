@@ -39,9 +39,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+
 # ML BACKEND
-# ═══════════════════════════════════════════════════════════════════════════════
+# ═════════
 
 class FeatureSelector(BaseEstimator, TransformerMixin):
     def __init__(self, vt_threshold=0.01, corr_threshold=0.9, mi_threshold=0.01):
@@ -202,9 +202,9 @@ def make_prediction(pipeline, raw: dict):
     return pred, conf
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+
 # UI
-# ═══════════════════════════════════════════════════════════════════════════════
+
 
 st.markdown('<p class="title">🏨 Hotel Booking Cancellation Predictor</p>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Fill in the booking details and click Predict.</p>', unsafe_allow_html=True)
@@ -267,7 +267,7 @@ with col2:
 booking_changes  = st.number_input("Booking Changes",   0, 20, 0)
 special_requests = st.number_input("Special Requests",  0, 10, 0)
 
-# ── Predict button ─────────────────────────────────────────────────────────────
+# Predict button 
 st.markdown("")
 if st.button("✅ Predict", use_container_width=True, type="primary"):
     raw = {
