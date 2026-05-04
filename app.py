@@ -295,7 +295,7 @@ with col5:
     total_of_special= st.number_input("Total Special Requests", 0, 10, 0)
 
 # ── Build raw dict ────────────────────────────────────────────────────────────
-raw_input = {
+raw = {
     "hotel":                          hotel,
     "lead_time":                      lead_time,
     "arrival_date_year":              arrival_year,
