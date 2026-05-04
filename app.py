@@ -336,7 +336,7 @@ try:
         if conf is not None:
             st.progress(int(conf), text=f"Confidence: {conf}%")
 
-    except Exception as e:
+except Exception as e:
         st.error(f"Prediction error: {e}")
         st.exception(e)
 '''
