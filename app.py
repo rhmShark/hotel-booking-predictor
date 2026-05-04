@@ -239,67 +239,93 @@ if pipeline is None:
     st.warning("⬅️ Please upload the dataset in the sidebar to train the model.")
     st.stop()
 
-# ── Input fields ──────────────────────────────────────────────────────────────
-col1, col2 = st.columns(2)
+# ── Input form ────────────────────────────────────────────────────────────────
+st.markdown("### Booking Details")
+
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    hotel         = st.selectbox("Hotel",              ["City Hotel", "Resort Hotel"])
-    lead_time     = st.number_input("Lead Time (days)", 0, 1000, 0)
-    adults        = st.number_input("Adults",           1, 20,   2)
-    children      = st.number_input("Children",         0, 10,   0)
-    babies        = st.number_input("Babies",           0, 10,   0)
-    stays_weekend = st.number_input("Weekend Nights",   0, 20,   0)
-    stays_week    = st.number_input("Week Nights",      0, 50,   1)
+    st.markdown('<p class="section-hdr">🏩 Hotel & Stay</p>', unsafe_allow_html=True)
+    hotel           = st.selectbox("Hotel Type", ["City Hotel", "Resort Hotel"])
+    lead_time       = st.number_input("Lead Time (days before arrival)", 0, 1000, 30)
+    stays_weekend   = st.number_input("Weekend Nights", 0, 20, 1)
+    stays_week      = st.number_input("Week Nights", 0, 50, 2)
+    meal            = st.selectbox("Meal Plan", ["BB", "HB", "FB", "SC", "Undefined"])
+    adr             = st.number_input("Average Daily Rate (ADR) $", 0.0, 5000.0, 90.0, step=5.0)
 
 with col2:
-    meal           = st.selectbox("Meal",                ["BB", "HB", "FB", "SC", "Undefined"])
-    country        = st.text_input("Country Code",       "PRT").upper().strip()
-    market_segment = st.selectbox("Market Segment",      ["Direct", "Corporate", "Online TA",
-                                                          "Offline TA/TO", "Complementary",
-                                                          "Groups", "Aviation", "Undefined"])
-    dist_channel   = st.selectbox("Distribution Channel",["Direct", "Corporate",
-                                                          "TA/TO", "GDS", "Undefined"])
-    deposit_type   = st.selectbox("Deposit Type",        ["No Deposit", "Non Refund", "Refundable"])
-    customer_type  = st.selectbox("Customer Type",       ["Transient", "Contract",
-                                                          "Transient-Party", "Group"])
-    adr            = st.number_input("ADR ($)",          0.0, 5000.0, 100.0, step=5.0)
+    st.markdown('<p class="section-hdr">👤 Guest Info</p>', unsafe_allow_html=True)
+    adults          = st.number_input("Adults", 1, 20, 2)
+    children        = st.number_input("Children", 0, 10, 0)
+    babies          = st.number_input("Babies", 0, 10, 0)
+    country         = st.text_input("Country Code (e.g. PRT, USA, EGY)", "PRT").upper()
+    customer_type   = st.selectbox("Customer Type", ["Transient", "Contract", "Transient-Party", "Group"])
+    is_repeated     = st.selectbox("Repeated Guest?", [0, 1], format_func=lambda x: "Yes" if x else "No")
 
-booking_changes  = st.number_input("Booking Changes",   0, 20, 0)
-special_requests = st.number_input("Special Requests",  0, 10, 0)
+with col3:
+    st.markdown('<p class="section-hdr">📅 Booking Info</p>', unsafe_allow_html=True)
+    market_segment  = st.selectbox("Market Segment",
+                                   ["Direct", "Corporate", "Online TA", "Offline TA/TO",
+                                    "Complementary", "Groups", "Aviation", "Undefined"])
+    dist_channel    = st.selectbox("Distribution Channel",
+                                   ["Direct", "Corporate", "TA/TO", "GDS", "Undefined"])
+    deposit_type    = st.selectbox("Deposit Type", ["No Deposit", "Non Refund", "Refundable"])
+    reserved_room   = st.selectbox("Reserved Room Type", list("ABCDEFGHI"))
+    assigned_room   = st.selectbox("Assigned Room Type", list("ABCDEFGHIK"))
+    booking_changes = st.number_input("Booking Changes", 0, 20, 0)
 
-# ── Predict button ─────────────────────────────────────────────────────────────
-st.markdown("")
-if st.button("✅ Predict", use_container_width=True, type="primary"):
-    raw = {
-        "hotel":                          hotel,
-        "lead_time":                      int(lead_time),
-        "arrival_date_year":              2025,
-        "arrival_date_month":             "January",
-        "arrival_date_week_number":       1,
-        "arrival_date_day_of_month":      1,
-        "stays_in_weekend_nights":        int(stays_weekend),
-        "stays_in_week_nights":           int(stays_week),
-        "adults":                         int(adults),
-        "children":                       float(children),
-        "babies":                         int(babies),
-        "meal":                           meal,
-        "country":                        country,
-        "market_segment":                 market_segment,
-        "distribution_channel":           dist_channel,
-        "is_repeated_guest":              0,
-        "previous_cancellations":         0,
-        "previous_bookings_not_canceled": 0,
-        "reserved_room_type":             "A",
-        "assigned_room_type":             "A",
-        "booking_changes":                int(booking_changes),
-        "deposit_type":                   deposit_type,
-        "days_in_waiting_list":           0,
-        "customer_type":                  customer_type,
-        "adr":                            float(adr),
-        "required_car_parking_spaces":    0,
-        "total_of_special_requests":      int(special_requests),
-    }
+col4, col5 = st.columns(2)
+with col4:
+    st.markdown('<p class="section-hdr">📆 Arrival Date</p>', unsafe_allow_html=True)
+    arrival_year    = st.selectbox("Arrival Year", [2024, 2025, 2026], index=1)
+    arrival_month   = st.selectbox("Arrival Month",
+                                   ["January","February","March","April","May","June",
+                                    "July","August","September","October","November","December"],
+                                   index=4)
+    arrival_week    = st.number_input("Arrival Week Number", 1, 53, 20)
+    arrival_day     = st.number_input("Day of Month", 1, 31, 15)
 
+with col5:
+    st.markdown('<p class="section-hdr">📝 History & Requests</p>', unsafe_allow_html=True)
+    prev_cancels    = st.number_input("Previous Cancellations", 0, 30, 0)
+    prev_bookings   = st.number_input("Previous Bookings Not Cancelled", 0, 100, 0)
+    special_requests= st.number_input("Special Requests", 0, 10, 0)
+    days_waiting    = st.number_input("Days in Waiting List", 0, 500, 0)
+    required_parking= st.number_input("Required Car Parking Spaces", 0, 8, 0)
+    total_of_special= st.number_input("Total Special Requests", 0, 10, 0)
+
+# ── Build raw dict ────────────────────────────────────────────────────────────
+raw_input = {
+    "hotel":                          hotel,
+    "lead_time":                      lead_time,
+    "arrival_date_year":              arrival_year,
+    "arrival_date_month":             arrival_month,
+    "arrival_date_week_number":       arrival_week,
+    "arrival_date_day_of_month":      arrival_day,
+    "stays_in_weekend_nights":        stays_weekend,
+    "stays_in_week_nights":           stays_week,
+    "adults":                         adults,
+    "children":                       float(children),
+    "babies":                         babies,
+    "meal":                           meal,
+    "country":                        country,
+    "market_segment":                 market_segment,
+    "distribution_channel":           dist_channel,
+    "is_repeated_guest":              is_repeated,
+    "previous_cancellations":         prev_cancels,
+    "previous_bookings_not_canceled": prev_bookings,
+    "reserved_room_type":             reserved_room,
+    "assigned_room_type":             assigned_room,
+    "booking_changes":                booking_changes,
+    "deposit_type":                   deposit_type,
+    "days_in_waiting_list":           days_waiting,
+    "customer_type":                  customer_type,
+    "adr":                            adr,
+    "required_car_parking_spaces":    required_parking,
+    "total_of_special_requests":      total_of_special,
+}
+
+'''
     try:
         with st.spinner("Predicting…"):
             result, conf = make_prediction(pipeline, raw)
@@ -315,3 +341,38 @@ if st.button("✅ Predict", use_container_width=True, type="primary"):
     except Exception as e:
         st.error(f"Prediction error: {e}")
         st.exception(e)
+'''
+# ── Predict ───────────────────────────────────────────────────────────────────
+st.markdown("---")
+predict_btn = st.button("🔍 Predict Cancellation", use_container_width=True, type="primary")
+
+if predict_btn:
+    try:
+        with st.spinner("Running SVM prediction…"):
+            result, confidence = predict(pipeline, raw_input)
+
+        if result == 1:
+            label = "⚠️ Booking Likely to be CANCELLED"
+            css   = "cancelled"
+        else:
+            label = "✅ Booking Likely to be KEPT"
+            css   = "not-cancelled"
+
+        st.markdown(f'<div class="result-box {css}">{label}</div>', unsafe_allow_html=True)
+
+        if confidence is not None:
+            st.progress(int(confidence), text=f"Model confidence: {confidence}%")
+
+        with st.expander("📊 Input Summary"):
+            summary = pd.DataFrame([raw_input]).T
+            summary.columns = ["Value"]
+            st.dataframe(summary, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Prediction failed: {e}")
+        st.exception(e)
+
+# ── Footer ────────────────────────────────────────────────────────────────────
+st.markdown("---")
+st.caption("SVM pipeline · Preprocessing → Variance filter → Correlation filter → MI filter → PCA → SVC (linear, C=1)")
+
