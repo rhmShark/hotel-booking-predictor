@@ -325,11 +325,9 @@ raw_input = {
     "total_of_special_requests":      total_of_special,
 }
 
-
-    try:
-        with st.spinner("Predicting…"):
-            result, conf = make_prediction(pipeline, raw)
-
+try:
+    with st.spinner("Predicting…"):
+        result, conf = make_prediction(pipeline, raw)
         if result == 1:
             st.markdown('<div class="box-cancelled">❌ Cancelled</div>', unsafe_allow_html=True)
         else:
