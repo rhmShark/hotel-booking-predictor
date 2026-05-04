@@ -325,7 +325,7 @@ raw_input = {
     "total_of_special_requests":      total_of_special,
 }
 
-'''
+
     try:
         with st.spinner("Predicting…"):
             result, conf = make_prediction(pipeline, raw)
@@ -376,3 +376,4 @@ if predict_btn:
 st.markdown("---")
 st.caption("SVM pipeline · Preprocessing → Variance filter → Correlation filter → MI filter → PCA → SVC (linear, C=1)")
 
+'''
